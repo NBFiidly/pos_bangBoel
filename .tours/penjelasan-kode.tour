@@ -1,0 +1,146 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "Penjelasan kode",
+  "steps": [
+    {
+      "file": "app/Filament/Resources/UserResource.php",
+      "description": "->dehydrateStateUsing(fn (string $state): string => Hash::make($state)):\r\nSaat form akan disimpan, nilai yang dimasukkan diubah dulu (dehydrate). Di sini apakah berubah menjadi Hash::make($state) — artinya password di-hash (bcrypt/argon sesuai config Laravel) sebelum disimpan ke database. Ini mencegah menyimpan password sebagai teks biasa.\r\n\r\n->dehydrated(fn (?string $state): bool => filled($state)):\r\nMenentukan apakah field ini dikirimkan ke model saat menyimpan. filled($state) mengembalikan true hanya jika ada nilai (bukan null atau string kosong). Jadi, jika saat edit admin tidak mengisi password, field tidak ikut disimpan — sehingga password lama tetap ada.\r\n\r\n->required(fn (string $operation): bool => $operation === 'create'):\r\nMembuat field wajib hanya ketika operasi adalah create (membuat user baru). Saat edit, tidak diwajibkan.",
+      "line": 38
+    },
+    {
+      "file": "app/Models/Customer.php",
+      "description": "protected $fillable : daftar nama kolom (atribut model) yang boleh diisi secara massal (mass assignment).\r\n\r\nTujuan: mencegah atribut yang tidak diizinkan diubah lewat operasi massal seperti Customer::create($request->all()).",
+      "line": 9
+    },
+    {
+      "file": "database/migrations/2025_11_20_150529_create_orders_table.php",
+      "description": "$table->foreignId('user_id')->constrained()->cascadeOnDelete();\r\nArtinya:\r\nBuat kolom user_id (tipe unsignedBigInteger) dan tambahkan foreign key yang merefer ke tabel users.id. Jika record user dihapus, semua record orders yang punya user_id tersebut juga otomatis dihapus (ON DELETE CASCADE).\r\nRincian langkah-per-langkah (bahasa sederhana)\r\n\r\nforeignId('user_id'):\r\nMembuat kolom bernama user_id dengan tipe yang sesuai untuk primary key Laravel modern (biasanya unsignedBigInteger).\r\nJuga biasanya menambahkan index pada kolom itu.\r\n\r\n->constrained():\r\nSecara otomatis menambahkan constraint foreign key yang menunjuk ke tabel yang diperkirakan dari nama kolom: user_id → tabel users, kolom id.\r\nSama dengan menulis ->references('id')->on('users').\r\n\r\n->cascadeOnDelete():\r\nMenentukan aksi ketika data di tabel yang direferensi dihapus. cascadeOnDelete() menghasilkan SQL ON DELETE CASCADE.\r\nArtinya: ketika baris di users dihapus, semua baris di orders yang punya user_id itu akan ikut dihapus otomatis.",
+      "line": 16
+    },
+    {
+      "file": "app/Models/Customer.php",
+      "description": "public function orders() { return $this->hasMany(Order::class); }\r\nArtinya:\r\nModel Customer punya relasi \"one-to-many\" ke model Order. Satu Customer bisa punya banyak Order.\r\nRincian sederhana\r\n\r\npublic function order():\r\nIni adalah method yang mendefinisikan relasi. Nama method akan digunakan sebagai nama relasi (mis. $customer->order).\r\n\r\nhasMany(Order::class):\r\nMenyatakan tipe relasi: satu Customer \"memiliki banyak\" Order.\r\nSecara default Laravel mengasumsikan kolom foreign key di tabel orders bernama customer_id dan merefer ke customers.id.",
+      "line": 9
+    },
+    {
+      "file": "app/Models/Order.php",
+      "description": "<?php\r\npublic function customer()\r\n{\r\n    return $this->belongsTo(Customer::class);\r\n}\r\n\r\nsetiap Order \"milik\" satu Customer. Ini mendefinisikan relasi inverse dari hasMany (pada Customer).\r\nRincian penting (bahasa gampang)\r\n\r\nbelongsTo(Customer::class): memberi tahu Eloquent bahwa tabel orders punya kolom foreign key (default) customer_id yang menunjuk ke customers.id.\r\n\r\nNama method: pakai bentuk tunggal (customer) — ini wajar untuk belongsTo karena mengembalikan satu model, bukan koleksi.\r\n\r\nNilai yang dikembalikan: saat Anda memanggil $order->customer Anda mendapat instance Customer terkait, atau null jika tidak ada.",
+      "line": 9
+    },
+    {
+      "file": "app/Models/Product.php",
+      "description": "public function orderdetails()\r\n    {\r\n        return $this->hasMany(Orderdetail::class);\r\n    }\r\n\r\nsatu Product bisa memiliki banyak Orderdetail. Relasi ini memberi tahu Eloquent bahwa tabel orderdetails punya kolom foreign key (default) product_id yang menunjuk ke products.id.\r\nRincian mudah dimengerti\r\n\r\nhasMany(Orderdetail::class): menyatakan relasi one-to-many (satu ke banyak).\r\n\r\nNama method orderdetails(): digunakan sebagai nama relasi. Saat Anda memanggil $product->orderdetails akan mengembalikan koleksi (Collection) berisi Orderdetail yang terkait.\r\n\r\nAsumsi default: Laravel mengharapkan kolom foreign key di tabel orderdetails bernama product_id. Jika kolom berbeda, Anda harus menyebutkannya secara eksplisit: hasMany(Orderdetail::class, 'kolom_product_id').",
+      "line": 15
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "Select::make('product_id')->...->afterStateUpdated(...).\r\nTujuan: setiap kali produk dipilih pada baris orderdetails (Repeater), closure ini otomatis mengisi price, quantity, subtotal, dan menghitung ulang total_price seluruh order.\r\nPenjelasan baris-per-baris (bahasa sederhana)\r\n\r\n->afterStateUpdated(function ($state, Set $set, Get $get) { ... })\r\n\r\nDipanggil setelah nilai product_id pada satu baris repeater diubah. Parameter:\r\n$state: nilai baru yang dipilih — di sini product_id (biasanya id integer).\r\n$set: fungsi untuk meng-set nilai field lain di form.\r\n$get: fungsi untuk mengambil nilai field lain di form.",
+      "line": 69
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "$product = \\App\\Models\\Product::find($state);\r\n\r\nAmbil model Product berdasarkan product_id. Jika $state null atau id tidak ada, $product jadi null.",
+      "line": 70
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "price = $product->price ?? 0;\r\n\r\nAmbil price produk. Jika $product null atau price tidak ada, pakai 0 sebagai fallback.",
+      "line": 71
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "$set('price', $price);\r\n\r\nIsi field price pada baris repeater saat ini dengan nilai price tersebut.",
+      "line": 72
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "$qty = $get('quantity') ?? 1;\r\n\r\nAmbil nilai quantity pada baris saat ini. Jika belum ada, gunakan default 1.",
+      "line": 74
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "$set('quantity', $qty);\r\n\r\nPastikan field quantity terisi (mis. jika kosong, di-set jadi 1).",
+      "line": 75
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "$subtotal = $price * $qty;\r\n\r\nHitung subtotal baris (harga × jumlah).",
+      "line": 77
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "$set('subtotal', $subtotal);\r\n\r\nIsi field subtotal di baris dengan hasil hitungan.",
+      "line": 78
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "$price = $get('price') ?? 0;\r\nAmbil harga (price) dari baris saat ini. Kalau belum ada, gunakan 0 sebagai cadangan.\r\n",
+      "line": 90
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "$subtotal = $price * $state;\r\nHitung subtotal baris: harga × jumlah. $state adalah nilai quantity yang baru.",
+      "line": 91
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "$set('subtotal', $subtotal);\r\nSet/isi field subtotal di baris itu dengan hasil perhitungan.",
+      "line": 92
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "$items = $get('../../orderdetails') ?? [];\r\nAmbil semua item orderdetails (seluruh repeater) dari form — dipakai untuk menghitung total semua subtotal.",
+      "line": 94
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "$total = array_sum(array_column($items, 'subtotal'));\r\nDari semua item, ambil kolom subtotal lalu jumlahkan untuk mendapatkan total order.",
+      "line": 95
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "$set('../../total_price', $total);\r\nSet nilai total_price (di luar repeater) dengan nilai total yang dihitung.",
+      "line": 96
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "etelah user memilih customer pada form (Select customer_id), closure ini otomatis mengisi (prefill) field customer.phone dan customer.address di form. Ini memudahkan pengisian data saat membuat order.\r\n\r\nParameter fungsi:\r\n\r\n$context (string) — konteks form, biasanya 'create' atau 'edit'.\r\n$state — nilai baru dari select, yaitu customer_id (biasanya id integer).\r\ncallable $set — fungsi untuk meng-set nilai field lain di form (mis. customer.phone).\r\nLogika langkah-per-langkah:\r\n\r\nif ($context === 'create') — hanya lakukan prefill ketika sedang membuat record baru. Saat edit, kode ini tidak dijalankan (mencegah menimpa data yang sudah ada).\r\nCustomer::find($state) — ambil model Customer berdasarkan id yang dipilih. Jika id tidak ada, hasilnya null.\r\n$set('customer.phone', $customer?->phone); — isi field customer.phone dengan nilai phone dari model; ?-> (null-safe) mencegah error kalau $customer null.\r\nSama untuk customer.address.",
+      "line": 46
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "men-disable opsi yang sudah di pilih sebelumnya",
+      "line": 67
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "->dehydrated() mengatur apakah nilai field akan \"didehydrate\" — artinya: apakah nilai field akan disertakan ketika Filament menyiapkan data form untuk disimpan ke model/database.\r\nDengan kata lain: dehydrated menentukan apakah field tersebut ikut dikirim/dimasukkan ke data yang akan disimpan.",
+      "line": 37
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "Fungsi ini memberi aturan bagaimana nilai (state) ditampilkan untuk field tersebut (biasanya untuk field price yang readOnly/disabled).\r\nLogika: jika sudah ada nilai ($state) — pakai itu; kalau belum, cari product berdasarkan product_id sibling dan gunakan price produk; kalau juga tidak ada → pakai 0.\r\nPenjelasan langkah-demi-langkah\r\n\r\n$state — nilai saat ini yang sudah ada di field (mis. dari database atau input sebelumnya).\r\nGet $get — helper untuk membaca nilai field lain di form (di repeater Anda, product_id berada di sibling).\r\n$state ?? ... — jika $state bukan null, kembalikan $state (tidak perlu lookup).\r\nProduct::find($get('product_id'))->price ?? 0 — bila $state kosong, ambil id product lewat $get('product_id'), cari model Product, lalu ambil price. Jika tidak ditemukan / kosong, fallback ke 0.",
+      "line": 90
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "$items = $get('../../orderdetails') ?? [];\r\n\r\nAmbil semua item orderdetails dari repeater seluruh form. laragon menavigasi ke level form yang tepat (relatif ke field dalam repeater). Jika belum ada, gunakan array kosong.",
+      "line": 80
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "Placeholder = komponen yang menampilkan teks statis/dinamis di form (biasanya untuk menampilkan data read-only seperti nomor telepon).\r\n->content(fn (Get $get) => ...) = isi Placeholder di-generate dinamis dengan closure yang menerima helper Get untuk membaca nilai field lain di form.\r\nCustomer::find($get('customer_id'))?->phone ?? '' = kalau ada customer_id dipilih, ambil model Customer dari DB lalu tampilkan phone; kalau tidak ada atau tidak ditemukan, tampilkan string kosong.",
+      "line": 58
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "$total = array_sum(array_column($items, 'subtotal'));\r\n\r\nDari semua item, ambil kolom subtotal lalu jumlahkan menjadi total.",
+      "line": 81
+    },
+    {
+      "file": "app/Filament/Resources/OrderResource.php",
+      "description": "$set('../../total_price', $total);\r\n\r\nSet nilai total_price di form (di luar repeater) ke hasil penjumlahan tadi.",
+      "line": 82
+    }
+  ]
+}
