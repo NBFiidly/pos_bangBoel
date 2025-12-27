@@ -4,7 +4,7 @@
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "false",
-        "APP_KEY": "@APP_KEY"
+        "APP_KEY": "base64:wh5+sTPN4quraSzefm3cGSfVjPZXQIqdHZZX2XJ4k9Q="
     },
     "routes": [
         {
