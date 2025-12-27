@@ -1,14 +1,10 @@
 {
-    "buildCommand": "npm run build",
+    "buildCommand": "npm run build && composer install && php artisan storage:link",
     "outputDirectory": "public",
     "env": {
         "APP_ENV": "production",
-        "APP_DEBUG": "false"
-    },
-    "functions": {
-        "api/index.php": {
-            "runtime": "now-php@1.0.0"
-        }
+        "APP_DEBUG": "false",
+        "APP_KEY": "@APP_KEY"
     },
     "routes": [
         {
