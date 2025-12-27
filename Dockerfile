@@ -4,12 +4,13 @@ FROM dunglas/frankenphp:php8.2.30-bookworm
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies & Composer
+# Install system dependencies & dev dependencies for PHP extensions
 RUN apt-get update && apt-get install -y \
     git \
     zip \
     unzip \
     curl \
+    libicu-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions (intl and zip required by Filament)
