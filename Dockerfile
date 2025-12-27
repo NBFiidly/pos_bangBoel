@@ -29,9 +29,6 @@ RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoload
 # Copy application files
 COPY . .
 
-# Run post-install scripts
-RUN composer dump-autoload --optimize --no-interaction
-
 # Install Node dependencies
 RUN npm install
 
