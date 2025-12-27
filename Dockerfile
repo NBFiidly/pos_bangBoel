@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     curl \
     libicu-dev \
+    libzip-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions (intl and zip required by Filament)
