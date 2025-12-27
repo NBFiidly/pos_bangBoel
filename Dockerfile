@@ -24,7 +24,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 COPY composer.json composer.lock ./
 
 # Install PHP dependencies
-RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --ignore-platform-req=php --ignore-platform-req=ext-intl --ignore-platform-req=ext-zip
 
 # Copy application files
 COPY . .
