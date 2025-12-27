@@ -1,9 +1,0 @@
-node_modules
-vendor
-.git
-.env.local
-.env.*.local
-storage/logs
-storage/framework/sessions
-storage/framework/cache
-storage/framework/views
