@@ -4,13 +4,16 @@ FROM dunglas/frankenphp:php8.2.30-bookworm
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies & Composer
 RUN apt-get update && apt-get install -y \
     git \
     zip \
     unzip \
     curl \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 # Copy composer files
 COPY composer.json composer.lock ./
