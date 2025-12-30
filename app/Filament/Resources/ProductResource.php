@@ -45,7 +45,7 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
-                    ->size(55)
+                    ->size(60)
                     ->circular(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
