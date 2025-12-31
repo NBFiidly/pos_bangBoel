@@ -16,18 +16,18 @@ class StatsWidget extends BaseWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('Total Customers', Customer::count())
-                ->description('Total registered customers')
+            Stat::make('Total Pelanggan', Customer::count())
+                ->description('Total pelanggan terdaftar')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
 
-            Stat::make('Total Orders', Order::count())
-                ->description('Total orders placed')
+            Stat::make('Total Order', Order::count())
+                ->description('Total order yang terdaftar')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('info'),
 
-            Stat::make('Total Products', Product::count())
-                ->description('Products in inventory')
+            Stat::make('Total Produk', Product::count())
+                ->description('Total produk yang terdaftar')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('warning'),
         ];

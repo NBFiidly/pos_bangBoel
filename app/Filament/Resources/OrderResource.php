@@ -30,6 +30,10 @@ class OrderResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
 
+    protected static ?string $navigationLabel = 'Pesanan';
+    protected static ?string $label = 'Pesanan';
+    protected static ?string $pluralLabel = 'Pesanan';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -39,35 +43,39 @@ class OrderResource extends Resource
                     ->disabled()
                     ->hiddenLabel()
                     ->dehydrated()
-                    ->prefix('Order Date: '),
+                    ->prefix('Tanggal Pesanan: '),
                 Section::make()
-                    ->description('Customer Information')
+                    ->description('Informasi Pelanggan')
                     ->schema([
                         Select::make('customer_id')
                             ->relationship('customer', 'name')
                             ->required()
+                            ->label('Nama')
                             ->reactive()
                             ->afterStateUpdated( function ($state, Set $set, Get $get) {
                                 $customer = Customer::find($state);
                                 $phone = $customer->phone ?? '';
                                 $address = $customer->address ?? '';
-                                $set('phone', $phone);
-                                $set('address', $address);
+                                $set('No HP', $phone);
+                                $set('Alamat', $address);
                             }),
-                            Placeholder::make('phone')
+                            Placeholder::make('No Hp')
                                 ->content(fn (Get $get) => Customer::find($get('customer_id'))?->phone ?? ''),
-                            Placeholder::make('address')
+                            Placeholder::make('Alamat')
                                 ->content(fn (Get $get) => Customer::find($get('customer_id'))?->address ?? ''),
                     ])->columns(3),
 
                     Section::make()
-                    ->description('Order Details')
+                    ->description('Detail Pesanan')
                     ->schema([
                         Repeater::make('orderdetails')
                             ->relationship()
+                            ->label('Detail Pesanan')
+                            ->addActionLabel('Tambah Pesanan')
                             ->schema([
                                 Select::make('product_id')
                                     ->relationship('product', 'name')
+                                    ->label('Nama Produk')
                                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                                     ->reactive()
                                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
@@ -86,11 +94,13 @@ class OrderResource extends Resource
                                         $set('../../total_price', $total);
                                     }),
                                 TextInput::make('price')
+                                    ->label('Harga')
                                     ->readOnly()
                                     ->numeric()
                                     ->disabled()
                                     ->formatStateUsing(fn ($state, Get $get) => $state ?? Product::find($get('product_id'))->price ?? 0),
                                 TextInput::make('quantity')
+                                    ->label('Jumlah')
                                     ->numeric()
                                     ->default(1)
                                     ->reactive()
@@ -103,6 +113,7 @@ class OrderResource extends Resource
                                         $set('../../total_price', $total);
                                     }),
                                 TextInput::make('subtotal')
+                                    ->label('Subtotal')
                                     ->numeric()
                                     ->disabled()
                                     ->dehydrated(),
@@ -110,6 +121,7 @@ class OrderResource extends Resource
                     ]),
 
                 Forms\Components\TextInput::make('total_price')
+                    ->label('Harga Total')
                     ->required()
                     ->disabled()
                     ->dehydrated()
@@ -123,13 +135,16 @@ class OrderResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('customer.name')
                     ->numeric()
+                    ->label('Nama')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_price')
                     ->numeric()
                     ->money('IDR')
+                    ->label('Total Harga')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('date')
                     ->date()
+                    ->label('Tanggal Order')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

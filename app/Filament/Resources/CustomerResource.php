@@ -19,19 +19,26 @@ class CustomerResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
+    protected static ?string $navigationLabel = 'Pelanggan';
+    protected static ?string $label = 'Pelanggan';
+    protected static ?string $pluralLabel = 'Pelanggan';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->label('Nama')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('phone')
                     ->tel()
                     ->required()
+                    ->label('No. HP')
                     ->maxLength(255),
                 Forms\Components\Textarea::make('address')
                     ->required()
+                    ->label('Alamat')
                     ->maxLength(255),
             ]);
     }
@@ -41,10 +48,13 @@ class CustomerResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nama')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone')
+                    ->label('No. HP')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('address')
+                    ->label('Alamat')
                     ->limit(30)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')

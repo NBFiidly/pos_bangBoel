@@ -14,6 +14,13 @@ class OrderDetailRelationManager extends RelationManager
 {
     protected static string $relationship = 'orderdetails';
 
+    protected static ?string $title = 'Detail Pesanan';
+
+    public static function getTitle($ownerRecord, $pageClass): string
+    {
+        return 'Detail Pesanan';
+    }
+
     public function form(Form $form): Form
     {
         return $form
@@ -29,10 +36,16 @@ class OrderDetailRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('id')
             ->columns([
-                Tables\Columns\TextColumn::make('product.name'),
-                Tables\Columns\TextColumn::make('product.price')->label('Price')->money('IDR', true),
-                Tables\Columns\TextColumn::make('quantity')->label('Quantity'),
-                Tables\Columns\TextColumn::make('subtotal')->label('Subtotal')->money('IDR', true),
+                Tables\Columns\TextColumn::make('product.name')
+                    ->label('Nama Produk'),
+                Tables\Columns\TextColumn::make('product.price')
+                    ->label('Harga')
+                    ->money('IDR', true),
+                Tables\Columns\TextColumn::make('quantity')
+                    ->label('Jumlah'),
+                Tables\Columns\TextColumn::make('subtotal')
+                    ->label('Subtotal')
+                    ->money('IDR', true),
             ])
             ->filters([
                 //

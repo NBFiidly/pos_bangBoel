@@ -10,7 +10,7 @@ class ChartWidget extends BaseChartWidget
 {
     public int | string | array $columnSpan = 12;
     protected static ?int $sort = 2;
-    protected static ?string $heading = 'Orders per Month';
+    protected static ?string $heading = 'Order per Bulan';
 
     protected function getData(): array
     {
@@ -23,7 +23,7 @@ class ChartWidget extends BaseChartWidget
         ->orderBy('month')
         ->get();
 
-        $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        $months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agust', 'Sep', 'Okt', 'Nov', 'Des'];
         $chartData = array_fill(0, 12, 0);
 
         foreach ($data as $item) {
@@ -33,7 +33,7 @@ class ChartWidget extends BaseChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Orders',
+                    'label' => 'Order',
                     'data' => $chartData,
                     'borderColor' => 'rgb(59, 130, 246)',
                     'backgroundColor' => 'rgba(59, 130, 246, 0.1)',
