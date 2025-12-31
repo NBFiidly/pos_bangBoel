@@ -11,7 +11,7 @@ class CreateOrder extends CreateRecord
 
     public function getTitle(): string
     {
-        return 'Tambah Order';
+        return 'Tambah Pesanan';
     }
 
     protected function getCreateFormAction(): Action
