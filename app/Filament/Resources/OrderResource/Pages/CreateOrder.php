@@ -11,13 +11,13 @@ class CreateOrder extends CreateRecord
 
     public function getTitle(): string
     {
-        return 'Tambah Pesanan';
+        return 'Buat Pesanan';
     }
 
     protected function getCreateFormAction(): Action
     {
         return parent::getCreateFormAction()
-            ->label('Simpan');
+            ->label('Buat');
     }
 
     protected function getCreateAnotherFormAction(): Action
@@ -31,5 +31,10 @@ class CreateOrder extends CreateRecord
         return parent::getCancelFormAction()
             ->label('Batal')
             ->color('danger');
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
     }
 }

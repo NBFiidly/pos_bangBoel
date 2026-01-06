@@ -28,9 +28,9 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-calculator';
+    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
 
-    protected static ?string $navigationLabel = 'Kasir(POS)';
+    protected static ?string $navigationLabel = 'Kasir';
     protected static ?string $label = 'Pesanan';
     protected static ?string $pluralLabel = 'Pesanan';
 

@@ -28,7 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->brandLogo('/image/bang_boel_logo.png')
             // ->brandLogoDark('/image/dark_mode.png')
-            ->BrandLogoHeight('170px')
+            ->BrandLogoHeight('150px')
             ->brandName('Bang Boel')
             ->login()
             ->colors([

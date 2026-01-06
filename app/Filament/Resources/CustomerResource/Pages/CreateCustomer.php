@@ -19,13 +19,13 @@ class CreateCustomer extends CreateRecord
     protected function getCreateFormAction(): Action
     {
         return parent::getCreateFormAction()
-            ->label('Simpan');
+            ->label('Tambah');
     }
 
     protected function getCreateAnotherFormAction(): Action
     {
         return parent::getCreateAnotherFormAction()
-            ->label('Simpan & Buat Lagi');
+            ->label('Tambah & Buat Lagi');
     }
 
     protected function getCancelFormAction(): Action
@@ -33,5 +33,10 @@ class CreateCustomer extends CreateRecord
         return parent::getCancelFormAction()
             ->label('Batal')
             ->color('danger');
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
     }
 }
