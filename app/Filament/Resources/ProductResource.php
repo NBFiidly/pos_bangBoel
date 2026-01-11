@@ -29,15 +29,20 @@ class ProductResource extends Resource
         return $form
             ->schema([
                 FileUpload::make('image')
+                    ->label('Gambar')
                     ->image()
                     ->nullable(),
                 Forms\Components\TextInput::make('name')
+                    ->label('Nama')
+                    ->searchable()
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('stock')
+                    ->label('Stok')
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('price')
+                    ->label('Harga')
                     ->required()
                     ->numeric()
                     ->prefix('IDR'),
@@ -49,21 +54,27 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
+                    ->label('Gambar')
                     ->size(60)
                     ->circular(),
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nama')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('price')
+                    ->label('Harga')
                     ->money('IDR')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('stock')
+                    ->label('Stok')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Dibuat Pada')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Diperbarui Pada')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

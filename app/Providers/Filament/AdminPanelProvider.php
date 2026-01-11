@@ -26,13 +26,13 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->brandLogo('/image/bang_boel_logo.png')
-            // ->brandLogoDark('/image/dark_mode.png')
-            ->BrandLogoHeight('150px')
-            ->brandName('Bang Boel')
+            ->brandLogo('/image/bang-boel3.png')
+            ->darkModeBrandLogo('/image/bang-boel4.png')
+            ->brandLogoHeight('220px')
+            // ->brandName('Bang Boel')
             ->login()
             ->colors([
-                'primary' => Color::Blue,
+                'primary' => Color::Amber,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

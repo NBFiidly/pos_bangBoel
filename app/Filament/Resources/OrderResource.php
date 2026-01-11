@@ -83,6 +83,7 @@ class OrderResource extends Resource
                                     ->label('Nama Produk')
                                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                                     ->reactive()
+                                    ->getOptionLabelFromRecordUsing(fn (Product $record) => "{$record->name} (Stok: {$record->stock})")
                                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
                                         $product = \App\Models\Product::find($state);
                                         $price = $product->price ?? 0;
@@ -109,6 +110,26 @@ class OrderResource extends Resource
                                     ->numeric()
                                     ->default(1)
                                     ->reactive()
+                                    ->minValue(1)
+                                    ->rules([
+                                        fn (Get $get): \Closure => function (string $attribute, $value, \Closure $fail) use ($get) {
+                                            $productId = $get('product_id');
+                                            if ($productId) {
+                                                $product = Product::find($productId);
+                                                if ($product && $value > $product->stock) {
+                                                    $fail("Stok tidak mencukupi! Stok tersedia: {$product->stock}");
+                                                }
+                                            }
+                                        },
+                                    ])
+                                    ->helperText(function (Get $get) {
+                                        $productId = $get('product_id');
+                                        if ($productId) {
+                                            $product = Product::find($productId);
+                                            return $product ? "Stok tersedia: {$product->stock}" : '';
+                                        }
+                                        return '';
+                                    })
                                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
                                         $price = $get('price') ?? 0;
                                         $set('subtotal', $price * $state);
@@ -140,6 +161,7 @@ class OrderResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('customer.name')
                     ->numeric()
+                    ->searchable()
                     ->label('Nama')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_price')

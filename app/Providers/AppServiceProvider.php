@@ -19,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Register Orderdetail Observer untuk manajemen stok otomatis
+        \App\Models\Orderdetail::observe(\App\Observers\OrderdetailObserver::class);
     }
 }
