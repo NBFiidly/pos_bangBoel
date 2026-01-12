@@ -34,7 +34,6 @@ class ProductResource extends Resource
                     ->nullable(),
                 Forms\Components\TextInput::make('name')
                     ->label('Nama')
-                    ->searchable()
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('stock')
@@ -59,7 +58,7 @@ class ProductResource extends Resource
                     ->circular(),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nama')
-                    ->searchable(),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('price')
                     ->label('Harga')
                     ->money('IDR')
