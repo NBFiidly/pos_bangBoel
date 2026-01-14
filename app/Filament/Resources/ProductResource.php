@@ -30,7 +30,10 @@ class ProductResource extends Resource
             ->schema([
                 FileUpload::make('image')
                     ->label('Gambar')
+                    ->disk('public')
+                    ->directory('products')
                     ->image()
+                    ->imageEditor()
                     ->nullable(),
                 Forms\Components\TextInput::make('name')
                     ->label('Nama')
@@ -54,6 +57,7 @@ class ProductResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
                     ->label('Gambar')
+                    ->disk('public')
                     ->size(60)
                     ->circular(),
                 Tables\Columns\TextColumn::make('name')
