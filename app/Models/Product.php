@@ -13,6 +13,10 @@ class Product extends Model
         'image',
     ];
 
+    protected $casts = [
+        'image' => 'array',
+    ];
+
     public function orderdetails()
     {
         return $this->hasMany(Orderdetail::class);
